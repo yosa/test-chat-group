@@ -9,8 +9,8 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-const chatConnections = db.collection('yetcargo').doc('connections');
-const chatMessages = db.collection('yetcargo').doc('messages');
+const chatEvents = db.collection('yetcargo.events');
+const chatMessages = db.collection('yetcargo.messages');
 
 if (process.env.NODE_ENV !== 'production') {
   var server = require('http').Server(app);
@@ -29,12 +29,15 @@ io.on('connection', function(socket){
   socket.on('message', function(message) {
     console.log('message', message)
     socket.broadcast.emit('message', message);
-    chatMessages.set(message)
+    chatMessages.add(message)
   });
   socket.on('user.connected', function(user) {
     console.log('user connected', user)
     socket.broadcast.emit('user.connected', user);
-    chatConnections.set(user);
+    chatEvents.add({
+      type: 'user.connected',
+      data: user
+    });
   })
 });
 
