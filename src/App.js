@@ -13,6 +13,7 @@ import io from 'socket.io-client';
 import faker from 'faker';
 import { markdown } from 'markdown';
 import DialogChangeName from './DialogChangeName'
+import moment from 'moment'
 
 class App extends Component {
 
@@ -25,7 +26,7 @@ class App extends Component {
       connected: false,
       socket: socket,
       messages: [],
-      username: `${faker.name.firstName()} - ${faker.random.number()}`
+      username: `${faker.name.firstName()} ${faker.random.number()}`
     };
     
     socket.on('connect', me.onSocketConnect.bind(me));
@@ -42,7 +43,6 @@ class App extends Component {
 
   onSocketMessage (message) {
     const me = this;
-    console.log(message)
     me.addMessage(message);
   }
 
@@ -64,6 +64,7 @@ class App extends Component {
     if (e.key !== 'Enter' || !message) {
       return
     }
+
     e.preventDefault();
     e.target.value = '';
     me.sendMessage(message);
@@ -71,10 +72,12 @@ class App extends Component {
 
   addMessage (messageObject) {
     const me = this;
+
     me.state.messages.push({
       id: me.state.messages.length + 1,
       message: messageObject.message,
-      username: messageObject.username
+      username: messageObject.username,
+      date: moment().format('YYYY-MM-DD h:mm a')
     });
     me.setState({
       messages: me.state.messages
@@ -110,11 +113,15 @@ class App extends Component {
     });
   }
 
+  getMessatePrimaryText (item) {
+    return `${item.username} - ${item.date}`
+  }
+
   renderMessages () {
     return this.state.messages.map(item => 
       <ListItem
         key={item.id}
-        primaryText={item.username}
+        primaryText={this.getMessatePrimaryText(item)}
         secondaryText={this.getMarkdownMessage(item.message)}
         leftAvatar={<FontAwesomeIcon className="message-avatar" icon={faUserCircle} />}
       />
