@@ -23,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "server": "node src/server.js"
+    "server": "node src/server.js",
+    "serverp": "NODE_ENV=production node src/server.js"
   },
   "css": {
     "preprocess": "less"

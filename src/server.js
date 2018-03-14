@@ -1,10 +1,18 @@
+var fs = require('fs');
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
+if (process.env.NODE_ENV !== 'production') {
+  var server = require('http').Server(app);
+} else {
+  var server = require('https').createServer({
+    key: fs.readFileSync(__dirname + '/privkey.pem'),
+    cert: fs.readFileSync(__dirname + '/fullchain.pem')
+  });
+}
+
+console.log(process.env.NODE_ENV)
+
+var io = require('socket.io')(server);
 
 io.on('connection', function(socket){
   console.log('a user connected');
@@ -15,6 +23,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3001, function(){
+server.listen(3001, function(){
   console.log('listening on *:3001');
 });

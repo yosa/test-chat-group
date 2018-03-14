@@ -19,7 +19,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     const me = this;
-    const socket = io('localhost:3001')
+    const socket = io(`${window.location.hostname !== 'localhost' ? 'https://app.yetcargo.melisa.mx' : 'localhost'}:3001`)
     this.state = {
       openDialogChangeName: false,
       connected: false,
