@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/fontawesome-free-solid';
@@ -7,6 +6,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
 import Toolbar from 'material-ui/Toolbar';
 import TextField from 'material-ui/TextField';
 import io from 'socket.io-client';
@@ -20,18 +20,28 @@ class App extends Component {
   constructor(props) {
     super(props);
     const me = this;
-    const socket = io(`${window.location.hostname !== 'localhost' ? 'https://app.yetcargo.melisa.mx' : 'localhost'}:3001`)
-    this.state = {
+    const config = require('../package.json')
+    const socket = io(`${window.location.hostname !== 'localhost' ? config.homepage : 'localhost'}:3001`)
+    me.state = {
       openDialogChangeName: false,
       connected: false,
       socket: socket,
       messages: [],
-      username: `${faker.name.firstName()} ${faker.random.number()}`
+      username: `${faker.name.firstName()} ${faker.random.number()}`,
+      users: []
     };
     
     socket.on('connect', me.onSocketConnect.bind(me));
     socket.on('message', me.onSocketMessage.bind(me));
     socket.on('disconnect', me.onSocketDisConnect.bind(me));
+    socket.on('user.connected', me.onSocketUserConnected.bind(me));
+  }
+
+  onSocketUserConnected (user) {
+    this.state.users.push(user)
+    this.setState({
+      users: this.state.users
+    })
   }
 
   onSocketDisConnect () {
@@ -47,10 +57,15 @@ class App extends Component {
   }
 
   onSocketConnect () {
-    this.setState({
+    const me = this
+    me.setState({
       connected: true
     })
-    console.log('connect')
+    me.state.socket.emit('user.connected', {
+      id: me.state.socket.id,
+      username: me.state.username,
+      date: moment().format('YYYY-MM-DD h:mm a')
+    })
   }
 
   getMarkdownMessage (message) {
@@ -117,6 +132,16 @@ class App extends Component {
     return `${item.username} - ${item.date}`
   }
 
+  renderUsers () {
+    return this.state.users.map(user =>
+      <ListItem
+        key={user.id}
+        primaryText={this.getMessatePrimaryText(user)}
+        leftAvatar={<FontAwesomeIcon className="message-avatar" icon={faUserCircle} />}
+      />
+    )
+  }
+
   renderMessages () {
     return this.state.messages.map(item => 
       <ListItem
@@ -138,12 +163,21 @@ class App extends Component {
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
-          <List>
+          <List className="App-list-messages">
+          <Subheader inset={true}>Messages</Subheader>
             {
               this.renderMessages()
             }
           </List>
         </MuiThemeProvider>
+        <MuiThemeProvider>
+        <List className="App-list-users">
+          <Subheader inset={true}>Users online</Subheader>
+            {
+              this.renderUsers()
+            }
+          </List>
+        </MuiThemeProvider>  
         <MuiThemeProvider>
           <Toolbar className="App-footer">
             <Avatar 

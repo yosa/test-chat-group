@@ -14,7 +14,6 @@
     "moment": "^2.21.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-native-uuid": "^1.4.9",
     "react-scripts": "1.1.1",
     "react-tap-event-plugin": "^3.0.2",
     "socket.io": "^2.0.4"

@@ -81,7 +81,9 @@ html, body, #root, .App, .App-intro {
   margin: 0;
 }
 
-.message-my
+.App-list-messages,
+.App-list-users
 {
-  
+  width: 50%;
+  float: left;
 }

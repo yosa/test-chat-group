@@ -1,5 +1,5 @@
-var fs = require('fs');
-var app = require('express')();
+const fs = require('fs');
+const app = require('express')();
 
 if (process.env.NODE_ENV !== 'production') {
   var server = require('http').Server(app);
@@ -10,17 +10,19 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-console.log(process.env.NODE_ENV)
-
-var io = require('socket.io')(server);
+const io = require('socket.io')(server);
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  console.log('socket connected');
 
   socket.on('message', function(message) {
     console.log('message', message)
     socket.broadcast.emit('message', message);
   });
+  socket.on('user.connected', function(user) {
+    console.log('user connected', user)
+    socket.broadcast.emit('user.connected', user)
+  })
 });
 
 server.listen(3001, function(){
