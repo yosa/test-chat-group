@@ -1,0 +1,86 @@
+html, body, #root, .App, .App-intro {
+  height: 100%;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.App-message {
+  width: 100%;
+  border: none;
+  line-height: 32px;
+  font-size: 14px;
+  margin-left: 30px;
+  height: auto !important;
+}
+
+.App-message:focus {
+  outline: none
+}
+
+.App-avatar
+{
+  margin-top: 10px;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.messages-wrapper
+{
+  padding: 10px;
+  height: 90%;
+}
+
+.message-wrapper
+{
+  text-align: left;
+  border: 1pt solid #c3c3c3;
+  padding: 20px;
+  list-style: none;
+  margin: 0 0 10px 0;
+}
+
+.message-avatar
+{
+  font-size: 40px;
+}
+
+.message-html p
+{
+  margin: 0;
+}
+
+.message-my
+{
+  
+}
