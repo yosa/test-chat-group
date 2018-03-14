@@ -76,7 +76,13 @@ html, body, #root, .App, .App-intro {
   font-size: 40px;
 }
 
-.message-html p
+.message-html p,
+.message-html h1,
+.message-html h2,
+.message-html h3,
+.message-html h4,
+.message-html h5,
+.message-html h6
 {
   margin: 0;
 }
@@ -86,4 +92,5 @@ html, body, #root, .App, .App-intro {
 {
   width: 50%;
   float: left;
+  margin-bottom: 100px;
 }
