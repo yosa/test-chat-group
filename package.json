@@ -8,6 +8,7 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
     "@fortawesome/react-fontawesome": "^0.0.17",
     "faker": "^4.1.0",
+    "firebase-admin": "^5.10.0",
     "less-watch-compiler": "^1.11.0",
     "markdown": "^0.5.0",
     "material-ui": "^0.20.0",
