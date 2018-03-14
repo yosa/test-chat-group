@@ -7,20 +7,21 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
-import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar';
+import Toolbar from 'material-ui/Toolbar';
 import TextField from 'material-ui/TextField';
 import io from 'socket.io-client';
 import faker from 'faker';
 import { markdown } from 'markdown';
+import DialogChangeName from './DialogChangeName'
 
 class App extends Component {
+
   constructor(props) {
     super(props);
     const me = this;
     const socket = io('localhost:3001')
     this.state = {
+      openDialogChangeName: false,
       connected: false,
       socket: socket,
       messages: [],
@@ -41,6 +42,7 @@ class App extends Component {
 
   onSocketMessage (message) {
     const me = this;
+    console.log(message)
     me.addMessage(message);
   }
 
@@ -59,7 +61,7 @@ class App extends Component {
     const message = e.target.value;
     const me = this;
 
-    if (e.key !== 'Enter') {
+    if (e.key !== 'Enter' || !message) {
       return
     }
     e.preventDefault();
@@ -72,8 +74,7 @@ class App extends Component {
     me.state.messages.push({
       id: me.state.messages.length + 1,
       message: messageObject.message,
-      username: messageObject.username,
-      isMy: messageObject.isMy
+      username: messageObject.username
     });
     me.setState({
       messages: me.state.messages
@@ -83,7 +84,6 @@ class App extends Component {
   sendMessage (message) {
     const me = this;
     const messageObject = {
-      isMy: true,
       message: message,
       username: me.state.username
     };
@@ -92,18 +92,27 @@ class App extends Component {
   }
 
   onClickAvatar () {
-    console.log('hola')
+    this.setState({
+      openDialogChangeName: true
+    });
   }
 
-  getItemClass (item) {
-    console.log(item)
-    return item.isMy ? 'message-my' : '';
+  onChangeName (name) {
+    if (!name) {
+      this.setState({
+        openDialogChangeName: false
+      });
+      return;
+    }
+    this.setState({
+      username: name,
+      openDialogChangeName: false
+    });
   }
 
   renderMessages () {
     return this.state.messages.map(item => 
       <ListItem
-        className={this.getItemClass(item)}
         key={item.id}
         primaryText={item.username}
         secondaryText={this.getMarkdownMessage(item.message)}
@@ -117,13 +126,12 @@ class App extends Component {
       <div>
         <MuiThemeProvider>
           <AppBar
-            title="Chat grupal"
+            title="Chat group"
             iconClassNameRight="muidocs-icon-navigation-expand-more"
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
           <List>
-            <Subheader>Mensajes</Subheader>
             {
               this.renderMessages()
             }
@@ -138,12 +146,18 @@ class App extends Component {
             />
             <TextField 
               className="App-message"
-              hintText="Escribe el mensaje"
+              hintText="Write the message"
               fullWidth={true}
               onKeyPress={this.onKeypressMessage.bind(this)}
               disabled={!this.state.connected}
             />
           </Toolbar>  
+        </MuiThemeProvider>
+        <MuiThemeProvider>
+          <DialogChangeName 
+            initialName={this.state.username}
+            open={this.state.openDialogChangeName}
+            onChangeName={this.onChangeName.bind(this)}/>
         </MuiThemeProvider>
       </div>
     );
