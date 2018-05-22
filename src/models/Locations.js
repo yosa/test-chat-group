@@ -25,6 +25,10 @@ const LocationsSchema = new mongoose.Schema({
   timestamp: {
     type: mongoose.Schema.Types.Number,
     required: true
+  },
+  id: {
+    type: mongoose.Schema.Types.String,
+    required: false
   }
 }, {
   collection: 'locations'

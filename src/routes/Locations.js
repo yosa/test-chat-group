@@ -7,6 +7,7 @@ module.exports = function(server, io) {
    */
   server.post('/locations', (req, res, next) => {
     let data = req.body || {}
+    console.log('post locations', data)
     Locations.create(data)
       .then(record => {
         res.status(200).send({
@@ -29,7 +30,13 @@ module.exports = function(server, io) {
    * get all locations
    */
   server.get('/locations', (req, res, next) => {
-    Locations.find({})
+    const query = {};
+    if (req.query.id) {
+      query ['id']= req.query.id
+    }
+    console.log(query)
+    Locations.find(query)
+      .find().sort('timestamp')
       .then(records => {
         res.status(200).send({
           success: true,
